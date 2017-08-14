@@ -4,7 +4,7 @@
 #
 Name     : libgnome-keyring
 Version  : 3.12.0
-Release  : 2
+Release  : 3
 URL      : https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz
 Source0  : https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz
 Summary  : The GNOME keyring libraries
@@ -26,6 +26,10 @@ BuildRequires : libxslt-bin
 BuildRequires : perl(XML::Parser)
 BuildRequires : pkgconfig(dbus-1)
 BuildRequires : pkgconfig(glib-2.0)
+BuildRequires : pkgconfig(gmodule-2.0)
+BuildRequires : pkgconfig(gobject-2.0)
+BuildRequires : six
+BuildRequires : six-python
 
 %description
 gnome-keyring is a program that keep password and other secrets for
@@ -80,8 +84,11 @@ locales components for the libgnome-keyring package.
 %setup -q -n libgnome-keyring-3.12.0
 
 %build
+export http_proxy=http://127.0.0.1:9/
+export https_proxy=http://127.0.0.1:9/
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1491866747
+export SOURCE_DATE_EPOCH=1502728806
 %configure --disable-static
 make V=1  %{?_smp_mflags}
 
@@ -89,11 +96,11 @@ make V=1  %{?_smp_mflags}
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
-export no_proxy=localhost
+export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1491866747
+export SOURCE_DATE_EPOCH=1502728806
 rm -rf %{buildroot}
 %make_install
 %find_lang libgnome-keyring
