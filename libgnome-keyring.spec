@@ -4,7 +4,7 @@
 #
 Name     : libgnome-keyring
 Version  : 3.12.0
-Release  : 4
+Release  : 5
 URL      : https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz
 Source0  : https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz
 Summary  : The GNOME keyring libraries
