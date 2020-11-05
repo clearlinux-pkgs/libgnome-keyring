@@ -4,32 +4,30 @@
 #
 Name     : libgnome-keyring
 Version  : 3.12.0
-Release  : 8
+Release  : 9
 URL      : https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz
 Source0  : https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz
 Summary  : The GNOME keyring libraries
 Group    : Development/Tools
 License  : GPL-2.0 LGPL-2.0
-Requires: libgnome-keyring-data
-Requires: libgnome-keyring-lib
-Requires: libgnome-keyring-doc
-Requires: libgnome-keyring-locales
+Requires: libgnome-keyring-data = %{version}-%{release}
+Requires: libgnome-keyring-lib = %{version}-%{release}
+Requires: libgnome-keyring-license = %{version}-%{release}
+Requires: libgnome-keyring-locales = %{version}-%{release}
+BuildRequires : buildreq-gnome
 BuildRequires : docbook-xml
 BuildRequires : gettext
-BuildRequires : gobject-introspection-dev
 BuildRequires : gtk-doc
 BuildRequires : gtk-doc-dev
 BuildRequires : intltool
 BuildRequires : libgcrypt-dev
-BuildRequires : libgpg-error-dev
 BuildRequires : libxslt-bin
 BuildRequires : perl(XML::Parser)
 BuildRequires : pkgconfig(dbus-1)
 BuildRequires : pkgconfig(glib-2.0)
 BuildRequires : pkgconfig(gmodule-2.0)
 BuildRequires : pkgconfig(gobject-2.0)
-BuildRequires : six
-BuildRequires : six-python
+Patch1: 0001-Fix-vapi-build-with-vala-0.42.patch
 
 %description
 gnome-keyring is a program that keep password and other secrets for
@@ -47,9 +45,10 @@ data components for the libgnome-keyring package.
 %package dev
 Summary: dev components for the libgnome-keyring package.
 Group: Development
-Requires: libgnome-keyring-lib
-Requires: libgnome-keyring-data
-Provides: libgnome-keyring-devel
+Requires: libgnome-keyring-lib = %{version}-%{release}
+Requires: libgnome-keyring-data = %{version}-%{release}
+Provides: libgnome-keyring-devel = %{version}-%{release}
+Requires: libgnome-keyring = %{version}-%{release}
 
 %description dev
 dev components for the libgnome-keyring package.
@@ -66,10 +65,19 @@ doc components for the libgnome-keyring package.
 %package lib
 Summary: lib components for the libgnome-keyring package.
 Group: Libraries
-Requires: libgnome-keyring-data
+Requires: libgnome-keyring-data = %{version}-%{release}
+Requires: libgnome-keyring-license = %{version}-%{release}
 
 %description lib
 lib components for the libgnome-keyring package.
+
+
+%package license
+Summary: license components for the libgnome-keyring package.
+Group: Default
+
+%description license
+license components for the libgnome-keyring package.
 
 
 %package locales
@@ -82,26 +90,36 @@ locales components for the libgnome-keyring package.
 
 %prep
 %setup -q -n libgnome-keyring-3.12.0
+cd %{_builddir}/libgnome-keyring-3.12.0
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1502728806
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1604619286
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$FFLAGS -fno-lto "
+export FFLAGS="$FFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
 %configure --disable-static
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1502728806
+export SOURCE_DATE_EPOCH=1604619286
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/libgnome-keyring
+cp %{_builddir}/libgnome-keyring-3.12.0/COPYING %{buildroot}/usr/share/package-licenses/libgnome-keyring/53afb4c86c46b4980f3f8bb129628c55e740226e
+cp %{_builddir}/libgnome-keyring-3.12.0/COPYING.GPL %{buildroot}/usr/share/package-licenses/libgnome-keyring/dfac199a7539a404407098a2541b9482279f690d
 %make_install
 %find_lang libgnome-keyring
 
@@ -112,6 +130,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 /usr/lib64/girepository-1.0/GnomeKeyring-1.0.typelib
 /usr/share/gir-1.0/*.gir
+/usr/share/vala/vapi/gnome-keyring-1.vapi
 
 %files dev
 %defattr(-,root,root,-)
@@ -122,7 +141,7 @@ rm -rf %{buildroot}
 /usr/lib64/pkgconfig/gnome-keyring-1.pc
 
 %files doc
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 /usr/share/gtk-doc/html/gnome-keyring/annotation-glossary.html
 /usr/share/gtk-doc/html/gnome-keyring/ch01.html
 /usr/share/gtk-doc/html/gnome-keyring/gnome-keyring-Callbacks.html
@@ -152,6 +171,11 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 /usr/lib64/libgnome-keyring.so.0
 /usr/lib64/libgnome-keyring.so.0.2.0
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/libgnome-keyring/53afb4c86c46b4980f3f8bb129628c55e740226e
+/usr/share/package-licenses/libgnome-keyring/dfac199a7539a404407098a2541b9482279f690d
 
 %files locales -f libgnome-keyring.lang
 %defattr(-,root,root,-)
