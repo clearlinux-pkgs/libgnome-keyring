@@ -4,7 +4,7 @@
 #
 Name     : libgnome-keyring
 Version  : 3.12.0
-Release  : 11
+Release  : 12
 URL      : https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz
 Source0  : https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz
 Summary  : The GNOME keyring libraries
@@ -98,7 +98,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1604619286
+export SOURCE_DATE_EPOCH=1664157514
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$FFLAGS -fno-lto "
@@ -115,11 +115,11 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1604619286
+export SOURCE_DATE_EPOCH=1664157514
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libgnome-keyring
-cp %{_builddir}/libgnome-keyring-3.12.0/COPYING %{buildroot}/usr/share/package-licenses/libgnome-keyring/53afb4c86c46b4980f3f8bb129628c55e740226e
-cp %{_builddir}/libgnome-keyring-3.12.0/COPYING.GPL %{buildroot}/usr/share/package-licenses/libgnome-keyring/dfac199a7539a404407098a2541b9482279f690d
+cp %{_builddir}/libgnome-keyring-%{version}/COPYING %{buildroot}/usr/share/package-licenses/libgnome-keyring/53afb4c86c46b4980f3f8bb129628c55e740226e || :
+cp %{_builddir}/libgnome-keyring-%{version}/COPYING.GPL %{buildroot}/usr/share/package-licenses/libgnome-keyring/dfac199a7539a404407098a2541b9482279f690d || :
 %make_install
 %find_lang libgnome-keyring
 
